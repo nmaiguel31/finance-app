@@ -1,0 +1,18 @@
+<h2>Registro de Usuario</h2>
+
+<form (ngSubmit)="onSubmit()" #form="ngForm">
+  <label>Nombre:</label>
+  <input type="text" name="nombre" [(ngModel)]="nombre" required />
+
+  <label>Email:</label>
+  <input type="email" name="email" [(ngModel)]="email" required />
+
+  <label>Contraseña:</label>
+  <input type="password" name="password" [(ngModel)]="password" required />
+
+  <button type="submit">Registrarse</button>
+</form>
+
+<p *ngIf="error" style="color: red;">{{ error }}</p>
+
+<p>¿Ya tienes cuenta? <a routerLink="/">Inicia sesión</a></p>
