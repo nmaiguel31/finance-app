@@ -1,2 +1,37 @@
-<h2>Bienvenido a tu Dashboard 🎉</h2>
-<p>Desde aquí podrás ver tus finanzas personales.</p>
+<h2>Bienvenido al Panel de Finanzas</h2>
+
+<!-- Formulario para agregar movimiento -->
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+  <input formControlName="description" placeholder="Descripción" />
+  <input formControlName="amount" placeholder="Monto" type="number" />
+  <select formControlName="type">
+    <option value="ingreso">Ingreso</option>
+    <option value="gasto">Gasto</option>
+  </select>
+  <input formControlName="category" placeholder="Categoría" />
+  <button type="submit" [disabled]="form.invalid">Agregar</button>
+</form>
+
+<div *ngIf="error" class="error">
+  {{ error }}
+</div>
+<h2>Ingresos</h2>
+<ul>
+  <li *ngFor="let income of incomes; let i = index">
+    {{ income.description }} $ {{ income.amount }}
+    <button (click)="deleteMovimiento('ingreso', i, income)">❌</button>
+  </li>
+</ul>
+
+<h2>Gastos</h2>
+<ul>
+  <li *ngFor="let expense of expenses; let i = index">
+    {{ expense.description }} - $ {{ expense.amount }}
+    <button (click)="deleteMovimiento('gasto', i, expense)">❌</button>
+  </li>
+</ul>
+
+
+
+<button (click)="logout()">Cerrar sesión</button>
+

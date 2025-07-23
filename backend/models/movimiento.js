@@ -1,33 +1,14 @@
+// models/movimiento.js
 const mongoose = require('mongoose');
 
-const movimientoSchema = new mongoose.Schema({
-  descripcion: { 
-    type: String, 
-    required: [true, 'La descripción es obligatoria'], 
-    trim: true 
-  },
-  monto: { 
-    type: Number, 
-    required: [true, 'El monto es obligatorio'], 
-    min: [0, 'El monto no puede ser negativo'] 
-  },
-  tipo: { 
-    type: String, 
-    enum: {
-      values: ['ingreso', 'gasto'],
-      message: '{VALUE} no es un tipo válido'
-    },
-    required: [true, 'El tipo es obligatorio']
-  },
-  fecha: { 
-    type: Date, 
-    default: Date.now 
-  },
-  userId: { 
-  type: mongoose.Schema.Types.ObjectId, 
-  ref: 'Usuario', 
-  required: true 
-  }
+const MovimientoSchema = new mongoose.Schema({
+  descripcion: { type: String, required: true },
+  monto: { type: Number, required: true },
+  tipo: { type: String, enum: ['ingreso', 'gasto'], required: true },
+  categoria: { type: String, required: true }, // ✅ AÑADIDO
+  usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  fecha: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Movimiento', movimientoSchema);
+
+module.exports = mongoose.model('Movimiento', MovimientoSchema);

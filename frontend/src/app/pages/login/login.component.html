@@ -12,4 +12,7 @@
 
 <p *ngIf="error" style="color: red;">{{ error }}</p>
 
-<p>No tienes cuenta? <a routerLink="/register">Regístrate aquí</a></p>
+<p>¿No tienes cuenta?
+  <a (click)="register()" style="cursor: pointer; color: blue;">Regístrate aquí</a>
+</p>
+

@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
 const authRoutes = require('./routes/auth');
 
 const app = express();
@@ -12,7 +12,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 
 // Rutas
-const movimientosRoutes = require('./routes/movimientos');
+const movimientosRoutes = require('./routes/movimientos.js');
 app.use('/movimientos', movimientosRoutes);
 
 // Conexión a MongoDB

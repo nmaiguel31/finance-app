@@ -23,14 +23,18 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.token);
-        localStorage.setItem('email', res.email); // opcional
+        localStorage.setItem('email', res.email);
         alert('¡Inicio de sesión exitoso!');
-        this.router.navigate(['/dashboard']); // redirigir al dashboard si quieres
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.error = 'Email o contraseña incorrectos';
         console.error(err);
       }
     });
+  }
+
+  register() {
+    this.router.navigate(['/register']);
   }
 }

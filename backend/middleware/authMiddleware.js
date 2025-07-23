@@ -1,18 +1,19 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || '@SeNi2231#';
 
 const authMiddleware = (req, res, next) => {
-  const token = req.header('Authorization');
+  const token = req.header('Authorization')?.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ error: 'Token no proporcionado' });
+    return res.status(401).json({ mensaje: 'Token no proporcionado' });
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.id; // Guardamos el ID del usuario en la request
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.usuario = decoded; // Asegúrate de que decoded tenga un campo `.id`
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Token inválido' });
+    return res.status(401).json({ mensaje: 'Token inválido' });
   }
 };
 

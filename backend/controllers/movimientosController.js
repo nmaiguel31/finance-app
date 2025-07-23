@@ -1,52 +1,53 @@
-const Movimiento = require('../models/movimiento.js');
+// backend/controllers/movimientoController.js
+const Movimiento = require('../models/movimiento');
 
-// Obtener movimientos solo del usuario autenticado
-const obtenerMovimientos = async (req, res) => {
-  try {
-    const movimientos = await Movimiento.find({ userId: req.userId });
-    res.json(movimientos);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los movimientos' });
-  }
-};
-
-// Crear movimiento asociado al usuario
 const crearMovimiento = async (req, res) => {
+  const { tipo, categoria, monto, descripcion } = req.body;
+
+  if (!tipo || !categoria || !monto || !descripcion) {
+    return res.status(400).json({ mensaje: 'Faltan campos obligatorios' });
+  }
+
   try {
     const nuevoMovimiento = new Movimiento({
-      ...req.body,
-      userId: req.userId
+      usuario: req.usuario.id, // <- del token
+      tipo,
+      categoria,
+      monto,
+      descripcion
     });
+
     await nuevoMovimiento.save();
     res.status(201).json(nuevoMovimiento);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error al crear movimiento:', error);
+    res.status(500).json({ mensaje: 'Error al crear movimiento' });
   }
 };
 
-// Eliminar movimiento solo si pertenece al usuario
+const obtenerMovimientos = async (req, res) => {
+  try {
+    const movimientos = await Movimiento.find({ usuario: req.usuario.id }).sort({ fecha: -1 });
+    res.status(200).json(movimientos);
+  } catch (error) {
+    console.error('Error al obtener movimientos:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const eliminarMovimiento = async (req, res) => {
   try {
-    const movimientoEliminado = await Movimiento.findOneAndDelete({
-      _id: req.params.id,
-      userId: req.userId
-    });
-
-    if (!movimientoEliminado) {
-      return res.status(404).json({ error: 'Movimiento no encontrado o no autorizado' });
-    }
-
+    const { id } = req.params;
+    await Movimiento.deleteOne({ _id: id, usuario: req.usuario.id }); // ← corregido aquí también
     res.json({ mensaje: 'Movimiento eliminado' });
   } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el movimiento' });
+    res.status(500).json({ error: error.message });
   }
 };
-
-// Controlador del resumen financiero
 
 const resumenFinanciero = async (req, res) => {
   try {
-    const movimientos = await Movimiento.find({ userId: req.userId });
+    const movimientos = await Movimiento.find({ usuario: req.usuario.id }); // ← aquí también
 
     const totalIngresos = movimientos
       .filter(mov => mov.tipo === 'ingreso')
@@ -64,6 +65,7 @@ const resumenFinanciero = async (req, res) => {
       saldoFinal
     });
   } catch (error) {
+    console.error('Error al calcular el resumen:', error);
     res.status(500).json({ error: 'Error al calcular el resumen' });
   }
 };

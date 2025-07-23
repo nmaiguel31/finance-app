@@ -21,15 +21,23 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
-    this.authService.register(this.nombre, this.email, this.password).subscribe({
-      next: () => {
-        alert('¡Registro exitoso!');
-        this.router.navigate(['/']); // redirige al login
-      },
-      error: (err) => {
-        this.error = 'No se pudo registrar. Verifica los datos.';
-        console.error(err);
-      }
-    });
+  this.authService.register({
+    nombre: this.nombre,
+    email: this.email,
+    password: this.password
+  }).subscribe({
+    next: () => {
+      alert('¡Registro exitoso!');
+      this.router.navigate(['/']);
+    },
+    error: (err) => {
+      this.error = 'No se pudo registrar. Verifica los datos.';
+      console.error(err);
+    }
+  });
+  }
+
+  login() {
+    this.router.navigate(['/']);
   }
 }
